@@ -1,0 +1,5 @@
+com/yoshio3/websockets/encoders/JSONMessageEncoder.class
+com/yoshio3/websockets/AsyncResultEndpoint.class
+com/yoshio3/websockets/encoders/JSONWrappedObject.class
+com/yoshio3/websockets/ConcurrentTaskExecutor.class
+com/yoshio3/websockets/tasks/MyCallableTask.class

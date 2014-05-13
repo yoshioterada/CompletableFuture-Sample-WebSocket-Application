@@ -1,0 +1,161 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <h:head>
+        <title>WebSocket Async Sample</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <title>WebSocket Async Sample</title>
+        <style type="text/css">
+            table,td,th { 
+                //                width: 700px;
+                font-size: smaller;
+                border-collapse: collapse; 
+                border: 1px white solid; 
+                color : white;
+            }
+            B {
+                color: white;
+            }
+            input[type=button]{
+                border-radius: 5px;
+                -moz-border-radius: 5px;
+                -webkit-border-radius: 5px;
+                -o-border-radius: 5px;
+                -ms-border-radius: 5px;
+                border:#a9a9a9 1px solid;
+                -moz-box-shadow: inset 0 0 5px rgba(0,0,0,0.2),0 0 2px rgba(0,0,0,0.3);
+                -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2),0 0 2px rgba(0,0,0,0.3);
+                box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2),0 0 2px rgba(0,0,0,0.3);
+                width:300px;
+                height:35px;
+                padding:0 3px;
+                cursor:pointer;
+                color: black;
+                font-weight:900;
+                background:#ffb500;
+                font-size: 14px;
+
+            }
+        </style>
+        <h:outputScript library="js" name="jquery.js"/>
+        <h:outputScript library="js" name="table-manage.js"/>
+
+        <script language="javascript" type="text/javascript">
+            var wsUri = "ws://localhost:8080/JavaDayTokyo2014/asyncResult";
+            var websocket = null;
+
+            function init() {
+                document.getElementById("sendMsg").style.display = "none";
+                document.getElementById("sendMsgBlk").style.display = "none";
+                document.getElementById("sendMsgNonBlk").style.display = "none";
+    }
+
+            function connectServerEndpoint() {
+                if ("WebSocket" in window) {
+                    websocket = new WebSocket(wsUri);
+                } else if ("MozWebSocket" in window) {
+                    websocket = new MozWebSocket(wsUri);
+                }
+                websocket = new WebSocket(wsUri);
+
+                websocket.onopen = function(evt) {
+                    onOpen(evt);
+                };
+                websocket.onmessage = function(evt) {
+                    onMessage(evt);
+                };
+                websocket.onerror = function(evt) {
+                    onError(evt);
+                };
+                document.getElementById("connect").style.display = "none";
+                document.getElementById("sendMsg").style.display = "block";
+                document.getElementById("sendMsgBlk").style.display = "block";
+                document.getElementById("sendMsgNonBlk").style.display = "block";
+            }
+
+            function onOpen(evt) {
+                ;
+            }
+
+            function onMessage(evt) {
+                writeToScreen(evt.data);
+            }
+
+            function onError(evt) {
+                writeToScreen("ERROR: " + evt.data);
+            }
+
+            function sendMessage() {
+                if (websocket) {
+                    websocket.send("re-execute");
+                }
+            }
+            function sendMessage2() {
+                if (websocket) {
+                    websocket.send("blocking");
+                }
+            }
+            function sendMessage3() {
+                if (websocket) {
+                    websocket.send("nonblocking");
+                }
+            }
+
+            function writeToScreen(messages) {
+                updateScreen(messages);
+            }
+
+            window.addEventListener("load", init, false);
+        </script>
+    </h:head>
+
+    <h:body style="background-color: #5382a1">
+        <h:graphicImage library="image" name="javaday.jpg" width="30%" height="30%" style="float:left"/>
+        <input id="connect" type="button" value="WebSocket Server 接続"  onClick="connectServerEndpoint();"></input>
+        <input id="sendMsg" type="button"  value="非同期処理の同時再実行" onClick="sendMessage();"></input>
+        <input id="sendMsgBlk" type="button"  value="ブロッキング・タスクの実行 (Java SE 7)" onClick="sendMessage2();"></input>
+        <input id="sendMsgNonBlk" type="button"  value="ノンブロッキング・タスクの実行 (Java SE 8)" onClick="sendMessage3();"></input>
+        <br/><br/><br/><br/>
+        <B>Java SE 7 : Future#get() (ブロッキング)</B>
+        <TABLE BORDER="1" CLASS="se7" WIDTH="860">
+            <TR>
+                <TD align="center" valign="middle" width="20">1</TD>
+                <TD align="center" valign="middle" width="20">2</TD>
+                <TD align="center" valign="middle" width="20">3</TD>
+                <TD align="center" valign="middle" width="20">4</TD>
+                <TD align="center" valign="middle" width="20">5</TD>
+                <TD align="center" valign="middle" width="20">6</TD>
+                <TD align="center" valign="middle" width="20">7</TD>
+                <TD align="center" valign="middle" width="20">8</TD>
+                <TD align="center" valign="middle" width="20">9</TD>
+                <TD align="center" valign="middle" width="20">10</TD>
+                <td align="center" valign="middle" width="80" style="border-style: none; ">
+                    <div style="color: white" id="msg4se7"></div>
+                    <div style="color: black;font-weight:bolder;font-size: 14px;" id="errMsg4se7"></div>
+                </td>
+            </TR>
+        </TABLE>
+        <br/>
+        <B>Java SE 8 : CompletableFuture (ノンブロッキング) </B>
+        <TABLE BORDER="1" CLASS="se8" WIDTH="860">            
+            <TR>
+                <TD align="center" valign="middle" width="20">1</TD>
+                <TD align="center" valign="middle" width="20">2</TD>
+                <TD align="center" valign="middle" width="20">3</TD>
+                <TD align="center" valign="middle" width="20">4</TD>
+                <TD align="center" valign="middle" width="20">5</TD>
+                <TD align="center" valign="middle" width="20">6</TD>
+                <TD align="center" valign="middle" width="20">7</TD>
+                <TD align="center" valign="middle" width="20">8</TD>
+                <TD align="center" valign="middle" width="20">9</TD>
+                <TD align="center" valign="middle" width="20">10</TD>
+                <td align="center" valign="middle" width="80" style="border-style: none; ">
+                    <div style="color: white" id="msg4se8"></div>
+                    <div style="color: black; font-weight:bolder;font-size: 14px;" id="errMsg4se8"></div>     
+                </td>
+            </TR>
+        </TABLE>
+    </h:body>
+</html>
+
