@@ -49,15 +49,16 @@
                 document.getElementById("sendMsg").style.display = "none";
                 document.getElementById("sendMsgBlk").style.display = "none";
                 document.getElementById("sendMsgNonBlk").style.display = "none";
-    }
+            }
 
             function connectServerEndpoint() {
                 if ("WebSocket" in window) {
                     websocket = new WebSocket(wsUri);
                 } else if ("MozWebSocket" in window) {
                     websocket = new MozWebSocket(wsUri);
+                } else {
+                    websocket = new WebSocket(wsUri);
                 }
-                websocket = new WebSocket(wsUri);
 
                 websocket.onopen = function(evt) {
                     onOpen(evt);
